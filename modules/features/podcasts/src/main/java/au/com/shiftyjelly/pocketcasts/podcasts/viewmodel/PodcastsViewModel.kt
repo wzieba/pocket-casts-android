@@ -3,6 +3,7 @@ package au.com.shiftyjelly.pocketcasts.podcasts.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.ViewModel
+import au.com.shiftyjelly.pocketcasts.a8ctv.utils.A8C_TV_PODCAST_UUID
 import au.com.shiftyjelly.pocketcasts.analytics.AnalyticsEvent
 import au.com.shiftyjelly.pocketcasts.analytics.AnalyticsTrackerWrapper
 import au.com.shiftyjelly.pocketcasts.models.entity.Folder
@@ -23,6 +24,7 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Flowable.combineLatest
 import io.reactivex.rxkotlin.Observables
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -53,6 +55,12 @@ class PodcastsViewModel
         val items: List<FolderItem>,
         val isSignedInAsPlus: Boolean
     )
+
+    fun addA8ctv() {
+        podcastManager.addPodcast(A8C_TV_PODCAST_UUID, subscribed = true, sync = false)
+            .subscribeOn(Schedulers.io())
+            .subscribe()
+    }
 
     val signInState: LiveData<SignInState> = LiveDataReactiveStreams.fromPublisher(userManager.getSignInState())
 

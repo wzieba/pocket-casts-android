@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import au.com.shiftyjelly.pocketcasts.a8ctv.auth.AuthorizeForWpCom
 import au.com.shiftyjelly.pocketcasts.analytics.AnalyticsEvent
 import au.com.shiftyjelly.pocketcasts.analytics.AnalyticsSource
 import au.com.shiftyjelly.pocketcasts.analytics.AnalyticsTrackerWrapper
@@ -74,6 +75,7 @@ class PodcastsFragment : BaseFragment(), FolderAdapter.ClickListener, PodcastTou
     @Inject lateinit var settings: Settings
     @Inject lateinit var castManager: CastManager
     @Inject lateinit var analyticsTracker: AnalyticsTrackerWrapper
+    @Inject lateinit var authorizeForWpCom: AuthorizeForWpCom
 
     private var podcastOptionsDialog: PodcastsOptionsDialog? = null
     private var folderOptionsDialog: FolderOptionsDialog? = null
@@ -233,6 +235,12 @@ class PodcastsFragment : BaseFragment(), FolderAdapter.ClickListener, PodcastTou
             R.id.create_folder -> {
                 analyticsTracker.track(AnalyticsEvent.PODCASTS_LIST_FOLDER_BUTTON_TAPPED)
                 createFolder()
+                true
+            }
+            R.id.login_wp -> {
+                authorizeForWpCom.invoke(requireContext()) {
+                    viewModel.addA8ctv()
+                }
                 true
             }
             else -> false

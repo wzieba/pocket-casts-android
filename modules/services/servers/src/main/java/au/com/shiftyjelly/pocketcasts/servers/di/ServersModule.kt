@@ -266,6 +266,7 @@ class ServersModule {
 
         return Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .baseUrl(Settings.WP_COM_API_URL)
             .client(okHttpClient)
             .build()

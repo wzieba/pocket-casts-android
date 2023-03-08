@@ -12,6 +12,7 @@ android {
 dependencies {
     // features
     implementation project(':modules:features:account')
+    implementation project(':modules:features:automattictv')
     implementation project(':modules:features:search')
     implementation project(':modules:features:settings')
 

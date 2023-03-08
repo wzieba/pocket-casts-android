@@ -1,6 +1,7 @@
 package au.com.shiftyjelly.pocketcasts.repositories.podcast
 
 import android.content.Context
+import au.com.shiftyjelly.pocketcasts.a8ctv.usecase.PrepareA8cTvPodcast
 import au.com.shiftyjelly.pocketcasts.analytics.FirebaseAnalyticsTracker
 import au.com.shiftyjelly.pocketcasts.models.db.AppDatabase
 import au.com.shiftyjelly.pocketcasts.models.entity.Episode
@@ -26,11 +27,12 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function3
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 import kotlinx.coroutines.rx2.rxCompletable
 import timber.log.Timber
-import java.util.Date
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.HashSet
 
 @Singleton
 class SubscribeManager @Inject constructor(
@@ -38,6 +40,7 @@ class SubscribeManager @Inject constructor(
     val podcastCacheServerManager: PodcastCacheServerManager,
     val syncServerManager: SyncServerManager,
     val staticServerManager: StaticServerManager,
+    val prepareA8cTvPodcast: PrepareA8cTvPodcast,
     @ApplicationContext val context: Context,
     val settings: Settings
 ) {
@@ -156,7 +159,16 @@ class SubscribeManager @Inject constructor(
 
     private fun downloadPodcast(podcastUuid: String): Single<Podcast> {
         // download the podcast
-        val serverPodcastObservable = podcastCacheServerManager.getPodcast(podcastUuid, episodeLimit = Settings.LIMIT_MAX_PODCAST_EPISODES)
+        val podcastSource = if (podcastUuid == "a8c.tv") {
+            prepareA8cTvPodcast()
+        } else {
+            podcastCacheServerManager.getPodcast(
+                podcastUuid,
+                episodeLimit = Settings.LIMIT_MAX_PODCAST_EPISODES
+            )
+        }
+
+        val serverPodcastObservable = podcastSource
             .subscribeOn(Schedulers.io())
             .doOnSuccess { Timber.i("Downloaded episodes success podcast $podcastUuid") }
         // download the colors

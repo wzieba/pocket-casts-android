@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.widget.ImageView
 import androidx.core.graphics.drawable.toBitmap
+import au.com.shiftyjelly.pocketcasts.a8ctv.utils.A8C_TV_PODCAST_UUID
 import au.com.shiftyjelly.pocketcasts.models.entity.Episode
 import au.com.shiftyjelly.pocketcasts.models.entity.Playable
 import au.com.shiftyjelly.pocketcasts.models.entity.Podcast
@@ -84,6 +85,7 @@ open class PodcastImageLoader(
 
     fun loadCoil(podcastUuid: String?, size: Int? = null, placeholder: Boolean = true, onComplete: () -> Unit = {}): ImageRequest.Builder {
         if (podcastUuid == null) return loadNoPodcastCoil()
+        if (podcastUuid == A8C_TV_PODCAST_UUID) return loadA8cTvCoil()
         val url = if (size != null) PodcastImage.getArtworkUrl(size = size, uuid = podcastUuid) else PodcastImage.getLargeArtworkUrl(uuid = podcastUuid)
 
         val placeholderDrawable = if (placeholder) placeholderResId() else 0
@@ -145,6 +147,11 @@ open class PodcastImageLoader(
                 loadNoPodcastCoil()
             }
         }
+    }
+
+    private fun loadA8cTvCoil(): ImageRequest.Builder {
+        return ImageRequest.Builder(context)
+            .data(IR.drawable.a8ctv_logo)
     }
 
     private fun loadNoPodcastCoil(): ImageRequest.Builder {

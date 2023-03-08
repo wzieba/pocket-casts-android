@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import au.com.shiftyjelly.pocketcasts.a8ctv.utils.isA8cTv
 import au.com.shiftyjelly.pocketcasts.analytics.AnalyticsEvent
 import au.com.shiftyjelly.pocketcasts.analytics.AnalyticsSource
 import au.com.shiftyjelly.pocketcasts.analytics.AnalyticsTrackerWrapper
@@ -145,7 +146,11 @@ class EpisodeFragmentViewModel @Inject constructor(
                 }
 
                 override fun notFound() {
-                    showNotes.value = ""
+                    if (episode.isA8cTv()) {
+                        showNotes.value = episode.episodeDescription
+                    } else {
+                        showNotes.value = ""
+                    }
                 }
             }
         )

@@ -28,6 +28,12 @@
         android:title="@string/podcasts_menu_search_podcasts" />
 
     <item
+        android:id="@+id/login_wp"
+        android:icon="@drawable/about_logo_wordpress"
+        app:showAsAction="always"
+        android:title="Login to WPCOM" />
+
+    <item
         android:id="@+id/more_options"
         android:icon="@drawable/ic_more_vert_black_24dp"
         app:showAsAction="always"

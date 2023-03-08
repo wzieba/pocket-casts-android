@@ -37,6 +37,8 @@ import au.com.shiftyjelly.pocketcasts.repositories.playback.LocalPlayer.Companio
 import au.com.shiftyjelly.pocketcasts.repositories.podcast.EpisodeManager
 import au.com.shiftyjelly.pocketcasts.repositories.podcast.PlaylistManager
 import au.com.shiftyjelly.pocketcasts.repositories.podcast.PodcastManager
+import au.com.shiftyjelly.pocketcasts.a8ctv.usecase.PrepareA8cTvEpisode
+import au.com.shiftyjelly.pocketcasts.a8ctv.utils.isA8cTv
 import au.com.shiftyjelly.pocketcasts.repositories.podcast.UserEpisodeManager
 import au.com.shiftyjelly.pocketcasts.repositories.podcast.toServerPostFile
 import au.com.shiftyjelly.pocketcasts.repositories.sync.NotificationBroadcastReceiver
@@ -102,6 +104,7 @@ open class PlaybackManager @Inject constructor(
     private val userEpisodeManager: UserEpisodeManager,
     private val analyticsTracker: AnalyticsTrackerWrapper,
     private val episodeAnalytics: EpisodeAnalytics,
+    private val prepareA8cTvEpisode: PrepareA8cTvEpisode,
 ) : FocusManager.FocusChangeListener, AudioNoisyManager.AudioBecomingNoisyListener, CoroutineScope {
 
     companion object {
@@ -1293,7 +1296,11 @@ open class PlaybackManager @Inject constructor(
         // make sure we have the most recent copy from the database
         val currentUpNextEpisode = upNextQueue.currentEpisode
         val episode: Playable? = if (currentUpNextEpisode is Episode) {
-            episodeManager.findByUuid(currentUpNextEpisode.uuid)
+            if (currentUpNextEpisode.isA8cTv()) {
+                prepareA8cTvEpisode(currentUpNextEpisode.uuid)
+            } else {
+                episodeManager.findByUuid(currentUpNextEpisode.uuid)
+            }
         } else if (currentUpNextEpisode is UserEpisode) {
             userEpisodeManager.findEpisodeByUuidRx(currentUpNextEpisode.uuid)
                 .flatMap {

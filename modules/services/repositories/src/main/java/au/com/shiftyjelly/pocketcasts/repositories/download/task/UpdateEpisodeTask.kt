@@ -3,6 +3,7 @@ package au.com.shiftyjelly.pocketcasts.repositories.download.task
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import au.com.shiftyjelly.pocketcasts.a8ctv.utils.A8C_TV_PODCAST_UUID
 import au.com.shiftyjelly.pocketcasts.models.db.AppDatabase
 import au.com.shiftyjelly.pocketcasts.preferences.Settings
 import au.com.shiftyjelly.pocketcasts.servers.podcast.PodcastCacheServerManagerImpl
@@ -32,7 +33,7 @@ class UpdateEpisodeTask(val context: Context, val params: WorkerParameters) : Wo
 
     override fun doWork(): Result {
         try {
-            if (podcastUUID == null) {
+            if (podcastUUID == null || podcastUUID == A8C_TV_PODCAST_UUID) {
                 return Result.success() // Nothing to do without a podcast
             }
 

@@ -18,6 +18,9 @@ val ISO_DATE_FORMATS = object : ThreadLocal<List<SimpleDateFormat>>() {
             // ISO dates can have milliseconds
             SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).apply {
                 timeZone = TimeZone.getTimeZone("UTC")
+            },
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US).apply {
+                timeZone = TimeZone.getTimeZone("UTC")
             }
         )
     }
